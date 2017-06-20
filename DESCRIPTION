@@ -1,7 +1,7 @@
 Package: rpostgisLT
 Title: Managing Animal Movement Data with 'PostGIS' and R
-Version: 0.4.0
-Date: 2016-10-26
+Version: 0.5.0
+Date: 2017-06-20
 Authors@R: c(
     person("Balázs", "Dukai", email = "balazs.dukai@gmail.com", role = c("aut"),
           comment =  "Package creator during Google Summer of Code 2016"),
@@ -10,7 +10,7 @@ Authors@R: c(
     person("David", "Bucklin", email = "dbucklin@ufl.edu", role =
            c("aut", "cre")),
     person("Clément", "Calenge", email = "clement.calenge@oncfs.gouv.fr",
-          role = c("aut")) )
+          role = c("ctb")) )
 Description: Integrates R and the 'PostgreSQL/PostGIS' database 
     system to build and manage animal trajectory (movement) data sets. 
     The package relies on 'ltraj' objects from the R package 'adehabitatLT',
@@ -26,16 +26,16 @@ URL: https://github.com/mablab/rpostgisLT
 BugReports: https://github.com/mablab/rpostgisLT/issues
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 Imports: sp, testthat
-Suggests: knitr, rmarkdown
+Suggests: knitr, raster, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2016-11-01 09:24:30 UTC; bdukai
+Packaged: 2017-06-20 14:30:24 UTC; dbucklin
 Author: Balázs Dukai [aut] (Package creator during Google Summer of Code 2016),
   Mathieu Basille [aut],
   David Bucklin [aut, cre],
-  Clément Calenge [aut]
+  Clément Calenge [ctb]
 Maintainer: David Bucklin <dbucklin@ufl.edu>
 Repository: CRAN
-Date/Publication: 2016-11-01 18:51:55
+Date/Publication: 2017-06-20 14:40:53 UTC

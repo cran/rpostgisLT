@@ -2,6 +2,7 @@
 % Please edit documentation in R/ltraj2pgtraj.R
 \name{ltraj2pgtraj}
 \alias{ltraj2pgtraj}
+\alias{writeTraj}
 \title{Export ltraj object from R to a PostGIS database.}
 \usage{
 ltraj2pgtraj(conn, ltraj, schema = "traj", pgtraj = NULL, note = NULL,
@@ -46,11 +47,10 @@ database.
   ltraj2pgtraj(conn, ibex, "traj_t2")
 }
 }
-\author{
-Balázs Dukai \email{balazs.dukai@gmail.com}
-}
 \seealso{
 \code{\link{as_pgtraj}} to create a \code{pgtraj} with
     data already stored in the database.
 }
-
+\author{
+Balázs Dukai \email{balazs.dukai@gmail.com}
+}

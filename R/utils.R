@@ -121,7 +121,7 @@ dl_opt <- function(x, rnames = TRUE) {
 #'    contains the numeric IDs of relocations.
 #' @param relocations Vector of string(s). Name of the field(s) that 
 #'    contains the relocations in relocations_table. If relocations are 
-#'    stored as pairs of (X,Y) or (long, lat) coorindates, the coordinates 
+#'    stored as pairs of (X,Y) or (long, lat) coordinates, the coordinates 
 #'    should be separated in two fields and referenced accordingly.
 #' @param srid Numeric. The PostGIS SRID of the CRS of 'relocations'.
 #' @param proj4string String. The PROJ4 string to be inserted into 
@@ -916,11 +916,21 @@ writeInfoFromLtraj <- function(conn, ltraj, pgtraj, schema) {
       attr2[badtz] <- "NULL"
       attr2 <- unlist(attr2)
       
+      # convert non-matching tz time to db tz
+      pgtz<-dbGetQuery(conn, "SHOW timezone;")[1,1]
+      tzl<-names(attr2[attr2 != "NULL" & attr2 != pgtz])
+      for (t in tzl) {
+        eval(parse(
+          text = paste0("attributes(b_df$",t,")$tzone <- pgtz") 
+        ))
+      }
+      
       # handle attribute (factor levels)
       fact <- unlist(lapply(b_df[1, ], function(x) {
           paste0("/*/", paste(attr(x, "levels"), collapse = "/*/"), 
               "/*/")
       }))
+      fact <- gsub(",", "\\,", fact, fixed = TRUE)
       attr2[!fact == "/*//*/"] <- fact[!fact == "/*//*/"]
       
       # make array of columns, types, and time zones
@@ -1122,6 +1132,9 @@ getPgtrajWithInfo <- function(conn, pgtraj, schema) {
                           ORDER BY a.id;")
     bursts <- dbGetQuery(conn, sql_query)$burst
     
+    # get db tz
+    pgtz<-dbGetQuery(conn, "SHOW timezone;")[1,1]
+    
     getinfo<-list()
     for (b in 1:length(bursts)) {
       b_nm<-bursts[b]
@@ -1171,11 +1184,20 @@ getPgtrajWithInfo <- function(conn, pgtraj, schema) {
                     justinfo[, i] <- factor(as.character(justinfo[, 
                       i]), levels = levs[levs != ""], ordered = ordered)
                   }
-                  if (att$defs %in% c("POSIXct", "POSIXlt", "POSIXt")) {
+                  if (att$defs %in% c("POSIXct","POSIXt")) {
                     justinfo[, i] <- list(eval(parse(text = paste0("as.", 
                       att$defs, "(as.character(justinfo[,i]),
                                           tz='", 
-                      att$atts, "')"))))
+                      pgtz, "')"))))
+                    # assign R tz
+                    eval(parse(
+                        text = paste0("attributes(justinfo$",i,")$tzone <- att$atts")
+                    ))
+                  }
+                  if (att$defs == "POSIXlt") {
+                    justinfo[, i] <- list(eval(parse(text = paste0("as.", 
+                      att$defs, "(as.character(justinfo[,i]),
+                                          tz=att$atts)"))))
                   }
               } else {
                   justinfo[, i] <- do.call(paste0("as.", att$defs), 
