@@ -12,7 +12,7 @@
 
 <meta name="author" content="Balázs Dukai, Mathieu Basille, David Bucklin, and Clément Calenge" />
 
-<meta name="date" content="2017-06-20" />
+<meta name="date" content="2018-03-02" />
 
 <title>rpostgisLT: Use cases</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">rpostgisLT: Use cases</h1>
 <h4 class="author"><em>Balázs Dukai, Mathieu Basille, David Bucklin, and Clément Calenge</em></h4>
-<h4 class="date"><em>2017-06-20</em></h4>
+<h4 class="date"><em>2018-03-02</em></h4>
 
 
 <div id="TOC">
@@ -103,7 +103,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h3>Initialization</h3>
 <p>A typical session will start by initializing the connection to the database, using PostgreSQL credentials through the <code>RPostgreSQL</code> package (note that loading <code>rpostgisLT</code> automatically loads <code>RPostgreSQL</code> too):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(rpostgisLT)
-con &lt;-<span class="st"> </span><span class="kw">dbConnect</span>(<span class="st">&quot;PostgreSQL&quot;</span>, <span class="dt">dbname =</span> &lt;dbname&gt;, <span class="dt">host =</span> &lt;host&gt;, <span class="dt">user =</span> &lt;user&gt;, <span class="dt">password =</span> &lt;password&gt;)</code></pre></div>
+con &lt;-<span class="st"> </span><span class="kw">dbConnect</span>(<span class="st">&quot;PostgreSQL&quot;</span>, <span class="dt">dbname =</span> <span class="op">&lt;</span>dbname<span class="op">&gt;</span>, <span class="dt">host =</span> <span class="op">&lt;</span>host<span class="op">&gt;</span>, <span class="dt">user =</span> <span class="op">&lt;</span>user<span class="op">&gt;</span>, <span class="dt">password =</span> <span class="op">&lt;</span>password<span class="op">&gt;</span>)</code></pre></div>
 <p>The next step will be to check whether the intended pgtraj schema is ready to use with the function <code>pgtrajSchema</code> (note that by default, the function checks and/or create the schema “traj”, which can be changed with the <code>schema</code> argument):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pgtrajSchema</span>(con)</code></pre></div>
 <p>If it is successful, the function should return <code>TRUE</code>, together with a message like:</p>
@@ -122,15 +122,15 @@ ibexraw
 
 ## Note that there is an issue with the time zone. In 'ibexraw', the
 ## time zone is not set:
-<span class="kw">attr</span>(<span class="kw">ld</span>(ibexraw)$date, <span class="st">&quot;tzone&quot;</span>)
+<span class="kw">attr</span>(<span class="kw">ld</span>(ibexraw)<span class="op">$</span>date, <span class="st">&quot;tzone&quot;</span>)
 ## This means that it is assumed to be UTC, and is thus converted to
 ## local time zone on display (EDT2EST for me):
-<span class="kw">head</span>(<span class="kw">ld</span>(ibexraw)$date)                    <span class="co"># Note that the first timestamp</span>
+<span class="kw">head</span>(<span class="kw">ld</span>(ibexraw)<span class="op">$</span>date)                    <span class="co"># Note that the first timestamp</span>
                                           <span class="co"># should be '2003-06-01</span>
                                           <span class="co"># 00:00:56'</span>
 ## We need to fix that upfront:
 ibex &lt;-<span class="st"> </span><span class="kw">ld</span>(ibexraw)
-<span class="kw">attr</span>(ibex$date, <span class="st">&quot;tzone&quot;</span>) &lt;-<span class="st"> &quot;Europe/Paris&quot;</span>
+<span class="kw">attr</span>(ibex<span class="op">$</span>date, <span class="st">&quot;tzone&quot;</span>) &lt;-<span class="st"> &quot;Europe/Paris&quot;</span>
 ibex &lt;-<span class="st"> </span><span class="kw">dl</span>(ibex)
 
 <span class="kw">ltraj2pgtraj</span>(con, ibex)                   <span class="co"># Default should be in schema</span>
@@ -169,7 +169,7 @@ ibexTest &lt;-<span class="st"> </span><span class="kw">pgtraj2ltraj</span>(con,
 <h3>Interpolate [seq, geom, t, dt]</h3>
 <p>Two types of interpolation can be computed: in space, i.e. rebuilding a trajectory based on a given step length; and in time, i.e. linearly interpolate missing data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## 1. In space
-<span class="kw">summary</span>(<span class="kw">ld</span>(ibex)$dist)
+<span class="kw">summary</span>(<span class="kw">ld</span>(ibex)<span class="op">$</span>dist)
 (ibex &lt;-<span class="st"> </span><span class="kw">redisltraj</span>(ibex, <span class="dv">400</span>))
 ibex &lt;-<span class="st"> </span><span class="kw">removeinfo</span>(ibex)
 <span class="kw">ltraj2pgtraj</span>(con, ibex, <span class="dt">overwrite =</span> <span class="ot">TRUE</span>)
@@ -196,17 +196,17 @@ ibex &lt;-<span class="st"> </span>ibex.ref
 ## this is essentially what 'hab::subset' does.
 ## Note that the steps are not continuous any more.
 ibex &lt;-<span class="st"> </span><span class="kw">ld</span>(ibex)
-ibex &lt;-<span class="st"> </span><span class="kw">droplevels</span>(ibex[ibex$dist &lt;<span class="st"> </span><span class="dv">400</span> &amp;<span class="st"> </span>!<span class="kw">is.na</span>(ibex$dist), ])
-dlfast &lt;-<span class="st"> </span>function(x) {
+ibex &lt;-<span class="st"> </span><span class="kw">droplevels</span>(ibex[ibex<span class="op">$</span>dist <span class="op">&lt;</span><span class="st"> </span><span class="dv">400</span> <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(ibex<span class="op">$</span>dist), ])
+dlfast &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
     trajnam &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="st">&quot;date&quot;</span>, <span class="st">&quot;dx&quot;</span>, <span class="st">&quot;dy&quot;</span>, <span class="st">&quot;dist&quot;</span>, <span class="st">&quot;dt&quot;</span>,
         <span class="st">&quot;R2n&quot;</span>, <span class="st">&quot;abs.angle&quot;</span>, <span class="st">&quot;rel.angle&quot;</span>)
-    idd &lt;-<span class="st"> </span><span class="kw">tapply</span>(<span class="kw">as.character</span>(x$id), x$burst, unique)
-    traj &lt;-<span class="st"> </span><span class="kw">split</span>(x[, <span class="kw">names</span>(x) %in%<span class="st"> </span>trajnam], x$burst)
+    idd &lt;-<span class="st"> </span><span class="kw">tapply</span>(<span class="kw">as.character</span>(x<span class="op">$</span>id), x<span class="op">$</span>burst, unique)
+    traj &lt;-<span class="st"> </span><span class="kw">split</span>(x[, <span class="kw">names</span>(x) <span class="op">%in%</span><span class="st"> </span>trajnam], x<span class="op">$</span>burst)
     <span class="kw">names</span>(traj) &lt;-<span class="st"> </span><span class="ot">NULL</span>
     <span class="kw">class</span>(traj) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;ltraj&quot;</span>, <span class="st">&quot;list&quot;</span>)
     <span class="kw">attr</span>(traj, <span class="st">&quot;typeII&quot;</span>) &lt;-<span class="st"> </span><span class="ot">TRUE</span>
     <span class="kw">attr</span>(traj, <span class="st">&quot;regular&quot;</span>) &lt;-<span class="st"> </span><span class="kw">is.regular</span>(traj)
-    for (i in (<span class="dv">1</span>:<span class="kw">length</span>(traj))) {
+    <span class="cf">for</span> (i <span class="cf">in</span> (<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(traj))) {
         <span class="kw">attr</span>(traj[[i]], <span class="st">&quot;id&quot;</span>) &lt;-<span class="st"> </span><span class="kw">as.character</span>(idd[i])
         <span class="kw">attr</span>(traj[[i]], <span class="st">&quot;burst&quot;</span>) &lt;-<span class="st"> </span><span class="kw">names</span>(idd[i])
     }
@@ -221,7 +221,7 @@ ibexTest &lt;-<span class="st"> </span><span class="kw">pgtraj2ltraj</span>(con,
 
 ## 2. Subsample on the temporal sequence
 ibex &lt;-<span class="st"> </span>ibex.ref
-(ibex &lt;-<span class="st"> </span><span class="kw">subsample</span>(ibex, <span class="dv">14400</span>*<span class="dv">2</span>))
+(ibex &lt;-<span class="st"> </span><span class="kw">subsample</span>(ibex, <span class="dv">14400</span><span class="op">*</span><span class="dv">2</span>))
 <span class="kw">ltraj2pgtraj</span>(con, ibex, <span class="dt">overwrite =</span> <span class="ot">TRUE</span>)
 ibexTest &lt;-<span class="st"> </span><span class="kw">pgtraj2ltraj</span>(con, <span class="st">&quot;ibex&quot;</span>)
 <span class="kw">all.equal</span>(ibex, ibexTest)</code></pre></div>

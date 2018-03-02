@@ -1,14 +1,14 @@
 Package: rpostgisLT
 Title: Managing Animal Movement Data with 'PostGIS' and R
-Version: 0.5.0
-Date: 2017-06-20
+Version: 0.6.0
+Date: 2018-03-02
 Authors@R: c(
-    person("Balázs", "Dukai", email = "balazs.dukai@gmail.com", role = c("aut"),
-          comment =  "Package creator during Google Summer of Code 2016"),
+    person("Balázs", "Dukai", email = "balazs.dukai@gmail.com", role = c("aut", "cre"),
+          comment =  "Package creator during Google Summer of Code 2016 and 2017"),
     person("Mathieu", "Basille", email = "basille@ufl.edu", role =
            c("aut")),
-    person("David", "Bucklin", email = "dbucklin@ufl.edu", role =
-           c("aut", "cre")),
+    person("David", "Bucklin", email = "david.bucklin@gmail.com", role =
+           c("aut")),
     person("Clément", "Calenge", email = "clement.calenge@oncfs.gouv.fr",
           role = c("ctb")) )
 Description: Integrates R and the 'PostgreSQL/PostGIS' database 
@@ -27,15 +27,17 @@ BugReports: https://github.com/mablab/rpostgisLT/issues
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
-Imports: sp, testthat
-Suggests: knitr, raster, rmarkdown
+Imports: sp, lubridate, shiny, leaflet, htmltools, mapview,
+        shinyWidgets, magrittr, sf
+Suggests: knitr, raster, rmarkdown, testthat
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2017-06-20 14:30:24 UTC; dbucklin
-Author: Balázs Dukai [aut] (Package creator during Google Summer of Code 2016),
+Packaged: 2018-03-02 15:36:34 UTC; bdukai
+Author: Balázs Dukai [aut, cre] (Package creator during Google Summer of Code
+    2016 and 2017),
   Mathieu Basille [aut],
-  David Bucklin [aut, cre],
+  David Bucklin [aut],
   Clément Calenge [ctb]
-Maintainer: David Bucklin <dbucklin@ufl.edu>
+Maintainer: Balázs Dukai <balazs.dukai@gmail.com>
 Repository: CRAN
-Date/Publication: 2017-06-20 14:40:53 UTC
+Date/Publication: 2018-03-02 18:02:11 UTC
